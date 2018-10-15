@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "ClimbingAI",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "Neil Wang",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ClimbingAI",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}

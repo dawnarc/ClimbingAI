@@ -1,0 +1,26 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "4.20",
+  "Category": "",
+  "Description": "",
+  "Modules": [
+    {
+      "Name": "ClimbWall",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "UMG",
+        "Engine",
+        "CoreUObject",
+        "AIModule",
+        "ClimbingAI"
+      ]
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ClimbingAI",
+      "Enabled": true
+    }
+  ]
+}

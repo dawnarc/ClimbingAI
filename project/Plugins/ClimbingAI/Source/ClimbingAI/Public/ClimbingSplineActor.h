@@ -1,0 +1,125 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "ClimbingSplineActor.generated.h"
+
+class USplineComponent;
+class UArrowComponent;
+class UMyArrowComponent;
+
+
+UCLASS()
+class CLIMBINGAI_API AClimbingSplineActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+
+	AClimbingSplineActor();
+
+protected:
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void BeginPlay() override;
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+	virtual void PostLoad() override;
+
+private:
+
+	//设置箭头的相对坐标
+	FORCEINLINE void SetArrowRelativeLocatin(UArrowComponent* ArrowComp, const FVector& TemplateLoc, const FLinearColor& Color);
+
+	//设置自定义属性
+	FORCEINLINE void SetCustomProperties();
+
+	//查找当前ClimbingSplineActor附近的Pawn（预计算） @TODO inline
+	void FindAroundPawns(float DeltaSeconds);
+
+	//检测是否进入了攀爬区域 @TODO inline
+	void EnterClimbAreaCheck(float DeltaSeconds);
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly)
+		bool bEnabled = true;
+
+	//检测延迟时间（用于保证各个ClimbingSplineActor检测逻辑的时间错开）
+	float DelayCheckTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		USceneComponent* CustomRootComp;
+
+	//爬墙区域的路径
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		USplineComponent* ClimbLineComp;
+
+	//RootComponent的世界坐标
+	FVector RootLocation;
+
+	//判断是否进入攀爬区域的两个箭头组件（左边）
+	UArrowComponent* LeftEdgeComp;
+	UArrowComponent* LeftEdgePassComp;
+
+	//左边箭头的世界坐标
+	FVector LeftEdgeLocation;
+
+	//判断是否进入攀爬区域的两个箭头的方向向量（左边）
+	FVector LeftEdgeDirection;
+	FVector LeftEdgePassDirection;
+
+	//判断是否进入攀爬区域的两个箭头组件（右边）
+	UArrowComponent* RightEdgeComp;
+	UArrowComponent* RightEdgePassComp;
+
+	//右边箭头的世界坐标
+	FVector RightEdgeLocation;
+
+	//判断是否进入攀爬区域的两个方向向量（右边）
+	FVector RightEdgeDirection;
+	FVector RightEdgePassDirection;
+
+	//攀爬区域检测的宽度
+	UPROPERTY(EditAnywhere, Category = ArrowInfo)
+		float ClimbWidth = 200.f;
+
+	//攀爬区域检测的深度（水平方向，从RootComponent到 ClimbLineComp 之间的距离）
+	UPROPERTY(EditAnywhere, Category = ArrowInfo)
+		float ClimbDepth = 50.f;
+
+	//箭头颜色
+	UPROPERTY(EditAnywhere, Category = ArrowInfo)
+		FLinearColor ArrowColor = FLinearColor::Yellow;
+
+	//左边箭头的模版transform
+	const FVector TempLeftEdgeLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempLeftEdgeRot = FRotator(0.f, 1.f, 0.f);
+	const FVector TempLeftEdgePassLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempLeftEdgePassRot = FRotator(0.f, -1.f, 0.f);
+
+	//右边箭头的模版transform
+	const FVector TempRightEdgeLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempRightEdgeRot = FRotator(0.f, 179.f, 0.f);
+	const FVector TempRightEdgePassLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempRightEdgePassRot = FRotator(0.f, -179.f, 0.f);
+
+	//攀爬区域内的Lerp移动方向
+	FVector ClimbEnterLerpDirection;
+	
+	//攀爬区域内的Lerp移动方向
+	float ClimbEnterLerpDistance;
+
+	//当前ClimbingSplineActor附近的Pawn（预计算）
+	TArray<APawn*> AroundPawns;
+
+	float FindAroundPawnsInterval = 3.f;
+	float FindAroundPawnsTime = 0.f;
+
+	float EnterClimbAreaCheckInterval = 1.f;
+	float EnterClimbAreaCheckTime = 0.f;
+};
