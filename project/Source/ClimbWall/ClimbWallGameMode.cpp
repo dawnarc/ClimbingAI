@@ -27,7 +27,7 @@ void AClimbWallGameMode::StartPlay()
 
 	if (GetWorld())
 	{
-		if (APawn* Pawn = GetWorld()->SpawnActor<APawn>(DefaultPawnClass, FVector(-490.f, 453.f, 292.f), FRotator::ZeroRotator))
+		if (APawn* Pawn = GetWorld()->SpawnActor<APawn>(DefaultPawnClass, FVector(-490.f, 400.f, 292.f), FRotator::ZeroRotator))
 		{
 			Pawn->SpawnDefaultController();
 			

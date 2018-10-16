@@ -22,10 +22,10 @@ AClimbingSplineActor::AClimbingSplineActor()
 	CustomRootComp = CreateDefaultSubobject<USceneComponent>(TEXT("CustomRootComp"));
 	SetRootComponent(CustomRootComp);
 
-	ClimbLineComp = CreateDefaultSubobject<USplineComponent>(TEXT("ClimbLineComp"));
-	ClimbLineComp->SetupAttachment(CustomRootComp);
-	ClimbLineComp->SetRelativeLocation(FVector(0.f, -ClimbDepth, 0.f));
-	ClimbLineComp->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
+	ClimbSplineComp = CreateDefaultSubobject<USplineComponent>(TEXT("ClimbLineComp"));
+	ClimbSplineComp->SetupAttachment(CustomRootComp);
+	ClimbSplineComp->SetRelativeLocation(FVector(0.f, -ClimbDepth, 0.f));
+	ClimbSplineComp->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 
 	/*ClimbLineHorizonComp = CreateDefaultSubobject<USplineComponent>(TEXT("ClimbLineHorizonComp"));
 	ClimbLineHorizonComp->SetupAttachment(ClimbLineVerticalComp);*/
@@ -82,12 +82,12 @@ void AClimbingSplineActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//¼ÆËãÅÊÅÀ×Ü³¤¶È£¨¹ıÂËµôÌøÔ¾½×¶ÎºÍ¶Ñµş½×¶Î£©
-	if (ClimbLineComp)
+	//è®¡ç®—æ”€çˆ¬æ€»é•¿åº¦ï¼ˆè¿‡æ»¤æ‰è·³è·ƒé˜¶æ®µå’Œå †å é˜¶æ®µï¼‰
+	if (ClimbSplineComp)
 	{
-		int PointNum = ClimbLineComp->GetNumberOfSplinePoints();
-		
+		int PointNum = ClimbSplineComp->GetNumberOfSplinePoints();
 
+		ClimbLen = ClimbSplineComp->GetSplineLength();
 	}
 
 	if (RootComponent)
@@ -95,7 +95,7 @@ void AClimbingSplineActor::BeginPlay()
 		RootLocation = RootComponent->GetComponentLocation();
 	}
 
-	//¼ÆËã¼ıÍ··½ÏòÏòÁ¿
+	//è®¡ç®—ç®­å¤´æ–¹å‘å‘é‡
 	if (LeftEdgeComp)
 	{
 		LeftEdgeLocation = LeftEdgeComp->GetComponentLocation();
@@ -115,16 +115,16 @@ void AClimbingSplineActor::BeginPlay()
 		RightEdgePassDirection = RightEdgePassComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
 
-	//¼ÆËãÅÊÅÀÇøÓòÄÚµÄLerpÒÆ¶¯·½Ïò
-	if (LeftEdgeComp && RightEdgeComp && ClimbLineComp)
+	//è®¡ç®—æ”€çˆ¬åŒºåŸŸå†…çš„Lerpç§»åŠ¨æ–¹å‘
+	if (LeftEdgeComp && RightEdgeComp && ClimbSplineComp)
 	{
 		FVector Point1 = LeftEdgeComp->GetComponentLocation();
 		FVector Point2 = RightEdgeComp->GetComponentLocation();
-		FVector OutLinePoint = ClimbLineComp->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
+		SplineStartPointLoc = ClimbSplineComp->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
 
-		FVector FootPerpendicular = UKismetMathLibrary::FindClosestPointOnLine(OutLinePoint, Point1, Point1 - Point2);
+		FVector FootPerpendicular = UKismetMathLibrary::FindClosestPointOnLine(SplineStartPointLoc, Point1, Point1 - Point2);
 
-		FVector Direction = OutLinePoint - FootPerpendicular;
+		FVector Direction = SplineStartPointLoc - FootPerpendicular;
 		ClimbEnterLerpDirection = Direction.GetSafeNormal();
 		ClimbEnterLerpDistance = Direction.Size();
 	}
@@ -134,9 +134,9 @@ void AClimbingSplineActor::PostEditChangeProperty(FPropertyChangedEvent& Propert
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (ClimbLineComp)
+	if (ClimbSplineComp)
 	{
-		ClimbLineComp->SetRelativeLocation(FVector(0.f, -ClimbDepth, 0.f));
+		ClimbSplineComp->SetRelativeLocation(FVector(0.f, -ClimbDepth, 0.f));
 	}
 
 	SetCustomProperties();
@@ -146,7 +146,7 @@ void AClimbingSplineActor::PostLoad()
 {
 	Super::PostLoad();
 
-	//Èç¹û²»ÔÚPostLoadÖĞÉèÖÃÒ»´Î¼ıÍ·µÄRelativeLocation£¬ÔòArrowCompÔÚ³¡¾°±à¼­Æ÷ÖĞµÄÏÔÊ¾ÓĞÎÊÌâ£¬Ê¹ÓÃµÄ»¹ÊÇ¹¹Ôìº¯ÊıÖĞµÄÏà¶Ô×ø±ê
+	//å¦‚æœä¸åœ¨PostLoadä¸­è®¾ç½®ä¸€æ¬¡ç®­å¤´çš„RelativeLocationï¼Œåˆ™ArrowCompåœ¨åœºæ™¯ç¼–è¾‘å™¨ä¸­çš„æ˜¾ç¤ºæœ‰é—®é¢˜ï¼Œä½¿ç”¨çš„è¿˜æ˜¯æ„é€ å‡½æ•°ä¸­çš„ç›¸å¯¹åæ ‡
 	SetCustomProperties();
 }
 
@@ -203,11 +203,11 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 			{
 				if (UClimbingAIComponent* Comp = UClimbingAIUtil::GetClimbingAIComponent(Pawn))
 				{
-					if (1/*Comp->GetState() == EClimbState::ECS_NotArrive*/)
+					if (Comp->GetState() == EClimbState::ECS_NotArrive)
 					{
 						if (FVector::Dist(RootLocation, Pawn->GetActorLocation()) <= ClimbWidth)
 						{
-							//¼ì²â£º¼ıÍ·Æğµãµ½½ÇÉ«×ø±êµÄÏòÁ¿£¬ÓëÁ½¸ö¼ıÍ·ÏòÁ¿µÄ¼Ğ½Ç£¬Èç¹ûÓë LeftEdgePass µÄ¼Ğ½ÇĞ¡ÓÚ LeftEdge µÄ¼Ğ½Ç£¬ÔòËµÃ÷½øÈëÁËÅÊÅÀÇøÓò¡£
+							//æ£€æµ‹ï¼šç®­å¤´èµ·ç‚¹åˆ°è§’è‰²åæ ‡çš„å‘é‡ï¼Œä¸ä¸¤ä¸ªç®­å¤´å‘é‡çš„å¤¹è§’ï¼Œå¦‚æœä¸ LeftEdgePass çš„å¤¹è§’å°äº LeftEdge çš„å¤¹è§’ï¼Œåˆ™è¯´æ˜è¿›å…¥äº†æ”€çˆ¬åŒºåŸŸã€‚
 							FVector LeftArrowToPawn = (Pawn->GetActorLocation() - LeftEdgeLocation).GetSafeNormal();
 
 							float test1 = LeftEdgeDirection | LeftArrowToPawn;
@@ -217,7 +217,7 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 
 							bool IsEnter = false;
 
-							//Èç¹û×ó±ß¼ì²âÃ»ÓĞ½øÈëÅÊÅÀÇøÓò£¬±£ÏÕÆğ¼ûÔÙ¼ì²âÒ»ÏÂÓÒ±ß¼ıÍ·
+							//å¦‚æœå·¦è¾¹æ£€æµ‹æ²¡æœ‰è¿›å…¥æ”€çˆ¬åŒºåŸŸï¼Œä¿é™©èµ·è§å†æ£€æµ‹ä¸€ä¸‹å³è¾¹ç®­å¤´
 							if (LeftRadian < LeftRadianPass)
 							{
 								FVector RightArrowToPawn = Pawn->GetActorLocation() - RightEdgeLocation;
@@ -240,6 +240,7 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 									Comp->CalcClimbStartPoint(ClimbEnterLerpDirection, ClimbEnterLerpDistance, LeftEdgeComp->GetComponentLocation(), RightEdgeComp->GetComponentLocation());
 									Comp->SetState(EClimbState::ECS_Arrived);
 									Comp->EnablePawnCollision(false);
+									Comp->SetClimbActor(this);
 									if (UPawnMovementComponent* MovementComp = Pawn->GetMovementComponent())
 									{
 										MovementComp->StopMovementImmediately();

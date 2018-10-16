@@ -20,6 +20,12 @@ public:
 
 	AClimbingSplineActor();
 
+	float GetClimbSplineLen() { return ClimbLen; }
+
+	USplineComponent* GetSplineComponent() { return ClimbSplineComp; }
+
+	FVector GetSplineStartPointLocation() { return SplineStartPointLoc; }
+
 protected:
 
 	virtual void Tick(float DeltaSeconds) override;
@@ -32,16 +38,16 @@ protected:
 
 private:
 
-	//ÉèÖÃ¼ıÍ·µÄÏà¶Ô×ø±ê
+	//è®¾ç½®ç®­å¤´çš„ç›¸å¯¹åæ ‡
 	FORCEINLINE void SetArrowRelativeLocatin(UArrowComponent* ArrowComp, const FVector& TemplateLoc, const FLinearColor& Color);
 
-	//ÉèÖÃ×Ô¶¨ÒåÊôĞÔ
+	//è®¾ç½®è‡ªå®šä¹‰å±æ€§
 	FORCEINLINE void SetCustomProperties();
 
-	//²éÕÒµ±Ç°ClimbingSplineActor¸½½üµÄPawn£¨Ô¤¼ÆËã£© @TODO inline
+	//æŸ¥æ‰¾å½“å‰ClimbingSplineActoré™„è¿‘çš„Pawnï¼ˆé¢„è®¡ç®—ï¼‰ @TODO inline
 	void FindAroundPawns(float DeltaSeconds);
 
-	//¼ì²âÊÇ·ñ½øÈëÁËÅÊÅÀÇøÓò @TODO inline
+	//æ£€æµ‹æ˜¯å¦è¿›å…¥äº†æ”€çˆ¬åŒºåŸŸ @TODO inline
 	void EnterClimbAreaCheck(float DeltaSeconds);
 
 protected:
@@ -49,72 +55,75 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		bool bEnabled = true;
 
-	//¼ì²âÑÓ³ÙÊ±¼ä£¨ÓÃÓÚ±£Ö¤¸÷¸öClimbingSplineActor¼ì²âÂß¼­µÄÊ±¼ä´í¿ª£©
+	//æ£€æµ‹å»¶è¿Ÿæ—¶é—´ï¼ˆç”¨äºä¿è¯å„ä¸ªClimbingSplineActoræ£€æµ‹é€»è¾‘çš„æ—¶é—´é”™å¼€ï¼‰
 	float DelayCheckTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		USceneComponent* CustomRootComp;
 
-	//ÅÀÇ½ÇøÓòµÄÂ·¾¶
+	//çˆ¬å¢™åŒºåŸŸçš„è·¯å¾„
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		USplineComponent* ClimbLineComp;
+		USplineComponent* ClimbSplineComp;
 
-	//RootComponentµÄÊÀ½ç×ø±ê
+	//RootComponentçš„ä¸–ç•Œåæ ‡
 	FVector RootLocation;
 
-	//ÅĞ¶ÏÊÇ·ñ½øÈëÅÊÅÀÇøÓòµÄÁ½¸ö¼ıÍ·×é¼ş£¨×ó±ß£©
+	//æ”€çˆ¬æ›²çº¿çš„èµ·å§‹åæ ‡
+	FVector SplineStartPointLoc;
+
+	//åˆ¤æ–­æ˜¯å¦è¿›å…¥æ”€çˆ¬åŒºåŸŸçš„ä¸¤ä¸ªç®­å¤´ç»„ä»¶ï¼ˆå·¦è¾¹ï¼‰
 	UArrowComponent* LeftEdgeComp;
 	UArrowComponent* LeftEdgePassComp;
 
-	//×ó±ß¼ıÍ·µÄÊÀ½ç×ø±ê
+	//å·¦è¾¹ç®­å¤´çš„ä¸–ç•Œåæ ‡
 	FVector LeftEdgeLocation;
 
-	//ÅĞ¶ÏÊÇ·ñ½øÈëÅÊÅÀÇøÓòµÄÁ½¸ö¼ıÍ·µÄ·½ÏòÏòÁ¿£¨×ó±ß£©
+	//åˆ¤æ–­æ˜¯å¦è¿›å…¥æ”€çˆ¬åŒºåŸŸçš„ä¸¤ä¸ªç®­å¤´çš„æ–¹å‘å‘é‡ï¼ˆå·¦è¾¹ï¼‰
 	FVector LeftEdgeDirection;
 	FVector LeftEdgePassDirection;
 
-	//ÅĞ¶ÏÊÇ·ñ½øÈëÅÊÅÀÇøÓòµÄÁ½¸ö¼ıÍ·×é¼ş£¨ÓÒ±ß£©
+	//åˆ¤æ–­æ˜¯å¦è¿›å…¥æ”€çˆ¬åŒºåŸŸçš„ä¸¤ä¸ªç®­å¤´ç»„ä»¶ï¼ˆå³è¾¹ï¼‰
 	UArrowComponent* RightEdgeComp;
 	UArrowComponent* RightEdgePassComp;
 
-	//ÓÒ±ß¼ıÍ·µÄÊÀ½ç×ø±ê
+	//å³è¾¹ç®­å¤´çš„ä¸–ç•Œåæ ‡
 	FVector RightEdgeLocation;
 
-	//ÅĞ¶ÏÊÇ·ñ½øÈëÅÊÅÀÇøÓòµÄÁ½¸ö·½ÏòÏòÁ¿£¨ÓÒ±ß£©
+	//åˆ¤æ–­æ˜¯å¦è¿›å…¥æ”€çˆ¬åŒºåŸŸçš„ä¸¤ä¸ªæ–¹å‘å‘é‡ï¼ˆå³è¾¹ï¼‰
 	FVector RightEdgeDirection;
 	FVector RightEdgePassDirection;
 
-	//ÅÊÅÀÇøÓò¼ì²âµÄ¿í¶È
+	//æ”€çˆ¬åŒºåŸŸæ£€æµ‹çš„å®½åº¦
 	UPROPERTY(EditAnywhere, Category = ArrowInfo)
 		float ClimbWidth = 200.f;
 
-	//ÅÊÅÀÇøÓò¼ì²âµÄÉî¶È£¨Ë®Æ½·½Ïò£¬´ÓRootComponentµ½ ClimbLineComp Ö®¼äµÄ¾àÀë£©
+	//æ”€çˆ¬åŒºåŸŸæ£€æµ‹çš„æ·±åº¦ï¼ˆæ°´å¹³æ–¹å‘ï¼Œä»RootComponentåˆ° ClimbLineComp ä¹‹é—´çš„è·ç¦»ï¼‰
 	UPROPERTY(EditAnywhere, Category = ArrowInfo)
 		float ClimbDepth = 50.f;
 
-	//¼ıÍ·ÑÕÉ«
+	//ç®­å¤´é¢œè‰²
 	UPROPERTY(EditAnywhere, Category = ArrowInfo)
 		FLinearColor ArrowColor = FLinearColor::Yellow;
 
-	//×ó±ß¼ıÍ·µÄÄ£°ætransform
+	//å·¦è¾¹ç®­å¤´çš„æ¨¡ç‰ˆtransform
 	const FVector TempLeftEdgeLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
 	const FRotator TempLeftEdgeRot = FRotator(0.f, 1.f, 0.f);
 	const FVector TempLeftEdgePassLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
 	const FRotator TempLeftEdgePassRot = FRotator(0.f, -1.f, 0.f);
 
-	//ÓÒ±ß¼ıÍ·µÄÄ£°ætransform
+	//å³è¾¹ç®­å¤´çš„æ¨¡ç‰ˆtransform
 	const FVector TempRightEdgeLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
 	const FRotator TempRightEdgeRot = FRotator(0.f, 179.f, 0.f);
 	const FVector TempRightEdgePassLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
 	const FRotator TempRightEdgePassRot = FRotator(0.f, -179.f, 0.f);
 
-	//ÅÊÅÀÇøÓòÄÚµÄLerpÒÆ¶¯·½Ïò
+	//æ”€çˆ¬åŒºåŸŸå†…çš„Lerpç§»åŠ¨æ–¹å‘
 	FVector ClimbEnterLerpDirection;
 	
-	//ÅÊÅÀÇøÓòÄÚµÄLerpÒÆ¶¯·½Ïò
+	//æ”€çˆ¬åŒºåŸŸå†…çš„Lerpç§»åŠ¨æ–¹å‘
 	float ClimbEnterLerpDistance;
 
-	//µ±Ç°ClimbingSplineActor¸½½üµÄPawn£¨Ô¤¼ÆËã£©
+	//å½“å‰ClimbingSplineActoré™„è¿‘çš„Pawnï¼ˆé¢„è®¡ç®—ï¼‰
 	TArray<APawn*> AroundPawns;
 
 	float FindAroundPawnsInterval = 3.f;
@@ -122,4 +131,7 @@ protected:
 
 	float EnterClimbAreaCheckInterval = 1.f;
 	float EnterClimbAreaCheckTime = 0.f;
+
+	//æ”€çˆ¬æ€»é•¿åº¦
+	float ClimbLen;
 };
