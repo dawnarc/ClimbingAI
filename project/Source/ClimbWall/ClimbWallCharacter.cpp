@@ -11,6 +11,8 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
+#include "ClimbingAIUtil.h"
+
 AClimbWallCharacter::AClimbWallCharacter()
 {
 	// Set size for player capsule
@@ -71,5 +73,44 @@ void AClimbWallCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
+	}
+
+	if (bCanMove)
+	{
+		FVector Direction = GetActorRotation().Vector().GetSafeNormal();
+		AddMovementInput(Direction);
+	}
+}
+
+void AClimbWallCharacter::OnClimbAIStateChange(EClimbAIState State)
+{
+	switch (State)
+	{
+	case EClimbAIState::ECS_Arrived:
+	{
+		bCanMove = false;
+		break;
+	}
+	case EClimbAIState::ECS_IdleOnWall:
+	{
+
+		break;
+	}
+	}
+}
+
+void AClimbWallCharacter::SetClimbPause(bool bPause)
+{
+	if (UClimbingAIComponent* Comp = UClimbingAIUtil::GetClimbingAIComponent(this))
+	{
+		Comp->SetClimbPause(bPause);
+	}
+}
+
+void AClimbWallCharacter::SetLandingPause(bool bPause)
+{
+	if (UClimbingAIComponent* Comp = UClimbingAIUtil::GetClimbingAIComponent(this))
+	{
+		Comp->SetLandingPause(bPause);
 	}
 }

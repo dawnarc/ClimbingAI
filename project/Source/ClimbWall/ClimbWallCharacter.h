@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ClimbingAIComponent.h"
 #include "ClimbWallCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -24,6 +25,16 @@ public:
 	/** Returns CursorToWorld subobject **/
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 
+	void SetCanMove(bool Movable) { bCanMove = Movable; }
+
+	void OnClimbAIStateChange(EClimbAIState State);
+
+	UFUNCTION(BlueprintCallable)
+		void SetClimbPause(bool bPause);
+
+	UFUNCTION(BlueprintCallable)
+		void SetLandingPause(bool bPause);
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -36,5 +47,7 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
+
+	bool bCanMove = false;
 };
 

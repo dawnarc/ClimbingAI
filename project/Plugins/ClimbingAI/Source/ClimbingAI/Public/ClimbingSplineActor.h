@@ -72,26 +72,26 @@ protected:
 	FVector SplineStartPointLoc;
 
 	//判断是否进入攀爬区域的两个箭头组件（左边）
-	UArrowComponent* LeftEdgeComp;
-	UArrowComponent* LeftEdgePassComp;
+	UArrowComponent* EdgeLeftFrontComp;
+	UArrowComponent* EdgeLeftBackComp;
 
 	//左边箭头的世界坐标
-	FVector LeftEdgeLocation;
+	FVector EdgeLeftLocation;
 
 	//判断是否进入攀爬区域的两个箭头的方向向量（左边）
-	FVector LeftEdgeDirection;
-	FVector LeftEdgePassDirection;
+	FVector EdgeLeftFrontDirection;
+	FVector EdgeLeftBackDirection;
 
 	//判断是否进入攀爬区域的两个箭头组件（右边）
-	UArrowComponent* RightEdgeComp;
-	UArrowComponent* RightEdgePassComp;
+	UArrowComponent* EdgeRightFrontComp;
+	UArrowComponent* EdgeRightBackComp;
 
 	//右边箭头的世界坐标
 	FVector RightEdgeLocation;
 
 	//判断是否进入攀爬区域的两个方向向量（右边）
-	FVector RightEdgeDirection;
-	FVector RightEdgePassDirection;
+	FVector EdgeRightFrontDirection;
+	FVector EdgeRightBackDirection;
 
 	//攀爬区域检测的宽度
 	UPROPERTY(EditAnywhere, Category = ArrowInfo)
@@ -129,9 +129,12 @@ protected:
 	float FindAroundPawnsInterval = 3.f;
 	float FindAroundPawnsTime = 0.f;
 
-	float EnterClimbAreaCheckInterval = 1.f;
+	float EnterClimbAreaCheckInterval = 5.f;
 	float EnterClimbAreaCheckTime = 0.f;
 
 	//攀爬总长度
 	float ClimbLen;
+
+	//已经符合攀爬条件等待攀爬的Pawn（用于随机筛选）
+	TArray<APawn*> PawnsWaitToClimb;
 };

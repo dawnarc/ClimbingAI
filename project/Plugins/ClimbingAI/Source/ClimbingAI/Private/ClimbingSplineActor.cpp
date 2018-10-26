@@ -30,33 +30,33 @@ AClimbingSplineActor::AClimbingSplineActor()
 	/*ClimbLineHorizonComp = CreateDefaultSubobject<USplineComponent>(TEXT("ClimbLineHorizonComp"));
 	ClimbLineHorizonComp->SetupAttachment(ClimbLineVerticalComp);*/
 
-	LeftEdgeComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgeComp"));
-	LeftEdgeComp->SetupAttachment(CustomRootComp);
-	LeftEdgeComp->SetRelativeLocation(TempLeftEdgeLoc);
-	LeftEdgeComp->SetRelativeRotation(TempLeftEdgeRot);
-	LeftEdgeComp->SetArrowColor(ArrowColor);
-	LeftEdgeComp->SetHiddenInGame(false);
+	EdgeLeftFrontComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgeComp"));
+	EdgeLeftFrontComp->SetupAttachment(CustomRootComp);
+	EdgeLeftFrontComp->SetRelativeLocation(TempLeftEdgeLoc);
+	EdgeLeftFrontComp->SetRelativeRotation(TempLeftEdgeRot);
+	EdgeLeftFrontComp->SetArrowColor(ArrowColor);
+	EdgeLeftFrontComp->SetHiddenInGame(false);
 
-	LeftEdgePassComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgePassComp"));
-	LeftEdgePassComp->SetupAttachment(CustomRootComp);
-	LeftEdgePassComp->SetRelativeLocation(TempLeftEdgePassLoc);
-	LeftEdgePassComp->SetRelativeRotation(TempLeftEdgePassRot);
-	LeftEdgePassComp->SetArrowColor(ArrowColor);
-	LeftEdgePassComp->SetHiddenInGame(false);
+	EdgeLeftBackComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgePassComp"));
+	EdgeLeftBackComp->SetupAttachment(CustomRootComp);
+	EdgeLeftBackComp->SetRelativeLocation(TempLeftEdgePassLoc);
+	EdgeLeftBackComp->SetRelativeRotation(TempLeftEdgePassRot);
+	EdgeLeftBackComp->SetArrowColor(ArrowColor);
+	EdgeLeftBackComp->SetHiddenInGame(false);
 
-	RightEdgeComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgeComp"));
-	RightEdgeComp->SetupAttachment(CustomRootComp);
-	RightEdgeComp->SetRelativeLocation(TempRightEdgeLoc);
-	RightEdgeComp->SetRelativeRotation(TempRightEdgeRot);
-	RightEdgeComp->SetArrowColor(ArrowColor);
-	RightEdgeComp->SetHiddenInGame(false);
+	EdgeRightFrontComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgeComp"));
+	EdgeRightFrontComp->SetupAttachment(CustomRootComp);
+	EdgeRightFrontComp->SetRelativeLocation(TempRightEdgeLoc);
+	EdgeRightFrontComp->SetRelativeRotation(TempRightEdgeRot);
+	EdgeRightFrontComp->SetArrowColor(ArrowColor);
+	EdgeRightFrontComp->SetHiddenInGame(false);
 
-	RightEdgePassComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgePassComp"));
-	RightEdgePassComp->SetupAttachment(CustomRootComp);
-	RightEdgePassComp->SetRelativeLocation(TempRightEdgePassLoc);
-	RightEdgePassComp->SetRelativeRotation(TempRightEdgePassRot);
-	RightEdgePassComp->SetArrowColor(ArrowColor);
-	RightEdgePassComp->SetHiddenInGame(false);
+	EdgeRightBackComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgePassComp"));
+	EdgeRightBackComp->SetupAttachment(CustomRootComp);
+	EdgeRightBackComp->SetRelativeLocation(TempRightEdgePassLoc);
+	EdgeRightBackComp->SetRelativeRotation(TempRightEdgePassRot);
+	EdgeRightBackComp->SetArrowColor(ArrowColor);
+	EdgeRightBackComp->SetHiddenInGame(false);
 }
 
 void AClimbingSplineActor::Tick(float DeltaSeconds)
@@ -96,30 +96,30 @@ void AClimbingSplineActor::BeginPlay()
 	}
 
 	//计算箭头方向向量
-	if (LeftEdgeComp)
+	if (EdgeLeftFrontComp)
 	{
-		LeftEdgeLocation = LeftEdgeComp->GetComponentLocation();
-		LeftEdgeDirection = LeftEdgeComp->GetComponentRotation().Vector().GetSafeNormal();
+		EdgeLeftLocation = EdgeLeftFrontComp->GetComponentLocation();
+		EdgeLeftFrontDirection = EdgeLeftFrontComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
-	if (LeftEdgePassComp)
+	if (EdgeLeftBackComp)
 	{
-		LeftEdgePassDirection = LeftEdgePassComp->GetComponentRotation().Vector().GetSafeNormal();
+		EdgeLeftBackDirection = EdgeLeftBackComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
-	if (RightEdgeComp)
+	if (EdgeRightFrontComp)
 	{
-		RightEdgeLocation = RightEdgeComp->GetComponentLocation();
-		RightEdgeDirection = RightEdgeComp->GetComponentRotation().Vector().GetSafeNormal();
+		RightEdgeLocation = EdgeRightFrontComp->GetComponentLocation();
+		EdgeRightFrontDirection = EdgeRightFrontComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
-	if (RightEdgePassComp)
+	if (EdgeRightBackComp)
 	{
-		RightEdgePassDirection = RightEdgePassComp->GetComponentRotation().Vector().GetSafeNormal();
+		EdgeRightBackDirection = EdgeRightBackComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
 
 	//计算攀爬区域内的Lerp移动方向
-	if (LeftEdgeComp && RightEdgeComp && ClimbSplineComp)
+	if (EdgeLeftFrontComp && EdgeRightFrontComp && ClimbSplineComp)
 	{
-		FVector Point1 = LeftEdgeComp->GetComponentLocation();
-		FVector Point2 = RightEdgeComp->GetComponentLocation();
+		FVector Point1 = EdgeLeftFrontComp->GetComponentLocation();
+		FVector Point2 = EdgeRightFrontComp->GetComponentLocation();
 		SplineStartPointLoc = ClimbSplineComp->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
 
 		FVector FootPerpendicular = UKismetMathLibrary::FindClosestPointOnLine(SplineStartPointLoc, Point1, Point1 - Point2);
@@ -161,10 +161,10 @@ void AClimbingSplineActor::SetArrowRelativeLocatin(UArrowComponent* ArrowComp, c
 
 void AClimbingSplineActor::SetCustomProperties()
 {
-	SetArrowRelativeLocatin(LeftEdgeComp, FVector(-ClimbWidth / 2, TempLeftEdgeLoc.Y, TempLeftEdgeLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(LeftEdgePassComp, FVector(-ClimbWidth / 2, TempLeftEdgePassLoc.Y, TempLeftEdgePassLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(RightEdgeComp, FVector(ClimbWidth / 2, TempRightEdgeLoc.Y, TempRightEdgeLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(RightEdgePassComp, FVector(ClimbWidth / 2, TempRightEdgePassLoc.Y, TempRightEdgePassLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeLeftFrontComp, FVector(-ClimbWidth / 2, TempLeftEdgeLoc.Y, TempLeftEdgeLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeLeftBackComp, FVector(-ClimbWidth / 2, TempLeftEdgePassLoc.Y, TempLeftEdgePassLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeRightFrontComp, FVector(ClimbWidth / 2, TempRightEdgeLoc.Y, TempRightEdgeLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeRightBackComp, FVector(ClimbWidth / 2, TempRightEdgePassLoc.Y, TempRightEdgePassLoc.Z), ArrowColor);
 }
 
 void AClimbingSplineActor::FindAroundPawns(float DeltaSeconds)
@@ -196,6 +196,7 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 	if (EnterClimbAreaCheckTime > EnterClimbAreaCheckInterval)
 	{
 		EnterClimbAreaCheckTime = 0.f;
+		PawnsWaitToClimb.Reset();
 
 		for (APawn* Pawn : AroundPawns)
 		{
@@ -203,50 +204,56 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 			{
 				if (UClimbingAIComponent* Comp = UClimbingAIUtil::GetClimbingAIComponent(Pawn))
 				{
-					if (Comp->GetState() == EClimbState::ECS_NotArrive)
+					if (Comp->GetState() == EClimbAIState::ECS_NotArrive)
 					{
-						if (FVector::Dist(RootLocation, Pawn->GetActorLocation()) <= ClimbWidth)
+						if (FVector::Dist(RootLocation, Pawn->GetActorLocation()) <= ClimbWidth / 2)
 						{
 							//检测：箭头起点到角色坐标的向量，与两个箭头向量的夹角，如果与 LeftEdgePass 的夹角小于 LeftEdge 的夹角，则说明进入了攀爬区域。
-							FVector LeftArrowToPawn = (Pawn->GetActorLocation() - LeftEdgeLocation).GetSafeNormal();
+							FVector LeftArrowToPawn = (Pawn->GetActorLocation() - EdgeLeftLocation).GetSafeNormal();
 
-							float test1 = LeftEdgeDirection | LeftArrowToPawn;
-							float test2 = LeftEdgePassDirection | LeftArrowToPawn;
-							float LeftRadian = FMath::RadiansToDegrees(acosf(test1));
-							float LeftRadianPass = FMath::RadiansToDegrees(acosf(test2));
-
-							bool IsEnter = false;
+							float LeftFrontAngle = EdgeLeftFrontDirection | LeftArrowToPawn;
+							float LeftBackAngle = EdgeLeftBackDirection | LeftArrowToPawn;
+							float LeftFrontRadian = FMath::RadiansToDegrees(acosf(LeftFrontAngle));
+							float LeftBackRadian = FMath::RadiansToDegrees(acosf(LeftBackAngle));
 
 							//如果左边检测没有进入攀爬区域，保险起见再检测一下右边箭头
-							if (LeftRadian < LeftRadianPass)
+							if (LeftFrontRadian < LeftBackRadian)
 							{
 								FVector RightArrowToPawn = Pawn->GetActorLocation() - RightEdgeLocation;
-								float RightRadian = acosf(RightEdgeDirection | RightArrowToPawn);
-								float RightRadianPass = acosf(RightEdgePassDirection | RightArrowToPawn);
-								if (RightRadian >= RightRadianPass)
+								float RightFrontRadian = acosf(EdgeRightFrontDirection | RightArrowToPawn);
+								float RightBackRadian = acosf(EdgeRightBackDirection | RightArrowToPawn);
+								if (RightFrontRadian >= RightBackRadian)
 								{
-									IsEnter = true;
+									PawnsWaitToClimb.Add(Pawn);
 								}
 							}
 							else
 							{
-								IsEnter = true;
+								PawnsWaitToClimb.Add(Pawn);
 							}
+						}
+					}
+				}
+			}
+		}
 
-							if (IsEnter)
-							{
-								if (LeftEdgeComp && RightEdgeComp)
-								{
-									Comp->CalcClimbStartPoint(ClimbEnterLerpDirection, ClimbEnterLerpDistance, LeftEdgeComp->GetComponentLocation(), RightEdgeComp->GetComponentLocation());
-									Comp->SetState(EClimbState::ECS_Arrived);
-									Comp->EnablePawnCollision(false);
-									Comp->SetClimbActor(this);
-									if (UPawnMovementComponent* MovementComp = Pawn->GetMovementComponent())
-									{
-										MovementComp->StopMovementImmediately();
-									}
-								}
-							}
+		if (PawnsWaitToClimb.Num() > 0)
+		{
+			if (APawn* Pawn = PawnsWaitToClimb[FMath::RandRange(0, PawnsWaitToClimb.Num() - 1)])
+			{
+				if (UClimbingAIComponent* Comp = UClimbingAIUtil::GetClimbingAIComponent(Pawn))
+				{
+					if (EdgeLeftFrontComp && EdgeRightFrontComp)
+					{
+						Comp->CalcClimbStartPoint(ClimbEnterLerpDirection, ClimbEnterLerpDistance, EdgeLeftFrontComp->GetComponentLocation(), EdgeRightFrontComp->GetComponentLocation());
+						Comp->SetState(EClimbAIState::ECS_Arrived);
+						Comp->ResetRotateLerpTime();
+						Comp->EnablePawnCollision(false);
+						Comp->SetClimbActor(this);
+						Comp->SetClimbPause(true);
+						if (UPawnMovementComponent* MovementComp = Pawn->GetMovementComponent())
+						{
+							MovementComp->StopMovementImmediately();
 						}
 					}
 				}
