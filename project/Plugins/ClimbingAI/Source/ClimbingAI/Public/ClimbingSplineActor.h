@@ -32,7 +32,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 	virtual void PostLoad() override;
 
@@ -106,16 +108,16 @@ protected:
 		FLinearColor ArrowColor = FLinearColor::Yellow;
 
 	//左边箭头的模版transform
-	const FVector TempLeftEdgeLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
-	const FRotator TempLeftEdgeRot = FRotator(0.f, 1.f, 0.f);
-	const FVector TempLeftEdgePassLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
-	const FRotator TempLeftEdgePassRot = FRotator(0.f, -1.f, 0.f);
+	const FVector TempEdgeLeftFrontLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempEdgeLeftFrontRot = FRotator(0.f, 1.f, 0.f);
+	const FVector TempEdgeLeftBackLoc = FVector(-ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempEdgeLeftBackRot = FRotator(0.f, -1.f, 0.f);
 
 	//右边箭头的模版transform
-	const FVector TempRightEdgeLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
-	const FRotator TempRightEdgeRot = FRotator(0.f, 179.f, 0.f);
-	const FVector TempRightEdgePassLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
-	const FRotator TempRightEdgePassRot = FRotator(0.f, -179.f, 0.f);
+	const FVector TempEdgeRightFrontLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempEdgeRightFrontRot = FRotator(0.f, 179.f, 0.f);
+	const FVector TempEdgeRightBackLoc = FVector(ClimbWidth / 2, 0.f, 0.f);
+	const FRotator TempEdgeRightBackRot = FRotator(0.f, -179.f, 0.f);
 
 	//攀爬区域内的Lerp移动方向
 	FVector ClimbEnterLerpDirection;

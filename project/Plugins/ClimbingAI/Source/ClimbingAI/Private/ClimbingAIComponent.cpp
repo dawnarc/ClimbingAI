@@ -314,7 +314,7 @@ void UClimbingAIComponent::ClimbLandingParabola(float DeltaSeconds)
 		{
 			if (CurrSpeed.Z < 0 && FMath::Abs(Character->GetActorLocation().Z - LandingZCoordinate) < LandingFloorDistExtent)
 			{
-				State = EClimbAIState::ECS_IdleOnWall;
+				State = EClimbAIState::ECS_Landed;
 
 				//Char->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Ignore);
 				//减小胶囊体半径，以减少卡住的情况（墙上的可行走空间较小）

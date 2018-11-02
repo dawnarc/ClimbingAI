@@ -20,6 +20,8 @@ enum class EClimbAIState : uint8
 	ECS_Climb,
 	//跳墙着陆
 	ECS_Landing,
+	//跳墙着陆之后的相关处理（比如播放着陆动画）
+	ECS_Landed,
 	//达到墙上
 	ECS_IdleOnWall,
 };

@@ -32,31 +32,27 @@ AClimbingSplineActor::AClimbingSplineActor()
 
 	EdgeLeftFrontComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgeComp"));
 	EdgeLeftFrontComp->SetupAttachment(CustomRootComp);
-	EdgeLeftFrontComp->SetRelativeLocation(TempLeftEdgeLoc);
-	EdgeLeftFrontComp->SetRelativeRotation(TempLeftEdgeRot);
+	EdgeLeftFrontComp->SetRelativeLocation(TempEdgeLeftFrontLoc);
+	EdgeLeftFrontComp->SetRelativeRotation(TempEdgeLeftFrontRot);
 	EdgeLeftFrontComp->SetArrowColor(ArrowColor);
-	EdgeLeftFrontComp->SetHiddenInGame(false);
 
 	EdgeLeftBackComp = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftEdgePassComp"));
 	EdgeLeftBackComp->SetupAttachment(CustomRootComp);
-	EdgeLeftBackComp->SetRelativeLocation(TempLeftEdgePassLoc);
-	EdgeLeftBackComp->SetRelativeRotation(TempLeftEdgePassRot);
+	EdgeLeftBackComp->SetRelativeLocation(TempEdgeLeftBackLoc);
+	EdgeLeftBackComp->SetRelativeRotation(TempEdgeLeftBackRot);
 	EdgeLeftBackComp->SetArrowColor(ArrowColor);
-	EdgeLeftBackComp->SetHiddenInGame(false);
 
 	EdgeRightFrontComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgeComp"));
 	EdgeRightFrontComp->SetupAttachment(CustomRootComp);
-	EdgeRightFrontComp->SetRelativeLocation(TempRightEdgeLoc);
-	EdgeRightFrontComp->SetRelativeRotation(TempRightEdgeRot);
+	EdgeRightFrontComp->SetRelativeLocation(TempEdgeRightFrontLoc);
+	EdgeRightFrontComp->SetRelativeRotation(TempEdgeRightFrontRot);
 	EdgeRightFrontComp->SetArrowColor(ArrowColor);
-	EdgeRightFrontComp->SetHiddenInGame(false);
 
 	EdgeRightBackComp = CreateDefaultSubobject<UArrowComponent>(TEXT("RightEdgePassComp"));
 	EdgeRightBackComp->SetupAttachment(CustomRootComp);
-	EdgeRightBackComp->SetRelativeLocation(TempRightEdgePassLoc);
-	EdgeRightBackComp->SetRelativeRotation(TempRightEdgePassRot);
+	EdgeRightBackComp->SetRelativeLocation(TempEdgeRightBackLoc);
+	EdgeRightBackComp->SetRelativeRotation(TempEdgeRightBackRot);
 	EdgeRightBackComp->SetArrowColor(ArrowColor);
-	EdgeRightBackComp->SetHiddenInGame(false);
 }
 
 void AClimbingSplineActor::Tick(float DeltaSeconds)
@@ -130,6 +126,7 @@ void AClimbingSplineActor::BeginPlay()
 	}
 }
 
+#if WITH_EDITOR
 void AClimbingSplineActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -141,6 +138,7 @@ void AClimbingSplineActor::PostEditChangeProperty(FPropertyChangedEvent& Propert
 
 	SetCustomProperties();
 }
+#endif
 
 void AClimbingSplineActor::PostLoad()
 {
@@ -161,10 +159,10 @@ void AClimbingSplineActor::SetArrowRelativeLocatin(UArrowComponent* ArrowComp, c
 
 void AClimbingSplineActor::SetCustomProperties()
 {
-	SetArrowRelativeLocatin(EdgeLeftFrontComp, FVector(-ClimbWidth / 2, TempLeftEdgeLoc.Y, TempLeftEdgeLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(EdgeLeftBackComp, FVector(-ClimbWidth / 2, TempLeftEdgePassLoc.Y, TempLeftEdgePassLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(EdgeRightFrontComp, FVector(ClimbWidth / 2, TempRightEdgeLoc.Y, TempRightEdgeLoc.Z), ArrowColor);
-	SetArrowRelativeLocatin(EdgeRightBackComp, FVector(ClimbWidth / 2, TempRightEdgePassLoc.Y, TempRightEdgePassLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeLeftFrontComp, FVector(-ClimbWidth / 2, TempEdgeLeftFrontLoc.Y, TempEdgeLeftFrontLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeLeftBackComp, FVector(-ClimbWidth / 2, TempEdgeLeftBackLoc.Y, TempEdgeLeftBackLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeRightFrontComp, FVector(ClimbWidth / 2, TempEdgeRightFrontLoc.Y, TempEdgeRightFrontLoc.Z), ArrowColor);
+	SetArrowRelativeLocatin(EdgeRightBackComp, FVector(ClimbWidth / 2, TempEdgeRightBackLoc.Y, TempEdgeRightBackLoc.Z), ArrowColor);
 }
 
 void AClimbingSplineActor::FindAroundPawns(float DeltaSeconds)
