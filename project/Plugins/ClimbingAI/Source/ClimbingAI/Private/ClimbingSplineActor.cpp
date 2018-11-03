@@ -57,6 +57,8 @@ AClimbingSplineActor::AClimbingSplineActor()
 
 void AClimbingSplineActor::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
 	if (!bEnabled)
 	{
 		return;
