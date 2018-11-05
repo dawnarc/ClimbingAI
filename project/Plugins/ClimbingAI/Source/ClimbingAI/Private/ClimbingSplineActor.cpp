@@ -105,7 +105,7 @@ void AClimbingSplineActor::BeginPlay()
 	}
 	if (EdgeRightFrontComp)
 	{
-		RightEdgeLocation = EdgeRightFrontComp->GetComponentLocation();
+		EdgeRightLocation = EdgeRightFrontComp->GetComponentLocation();
 		EdgeRightFrontDirection = EdgeRightFrontComp->GetComponentRotation().Vector().GetSafeNormal();
 	}
 	if (EdgeRightBackComp)
@@ -219,7 +219,7 @@ void AClimbingSplineActor::EnterClimbAreaCheck(float DeltaSeconds)
 							//如果左边检测没有进入攀爬区域，保险起见再检测一下右边箭头
 							if (LeftFrontRadian < LeftBackRadian)
 							{
-								FVector RightArrowToPawn = Pawn->GetActorLocation() - RightEdgeLocation;
+								FVector RightArrowToPawn = Pawn->GetActorLocation() - EdgeRightLocation;
 								float RightFrontRadian = acosf(EdgeRightFrontDirection | RightArrowToPawn);
 								float RightBackRadian = acosf(EdgeRightBackDirection | RightArrowToPawn);
 								if (RightFrontRadian >= RightBackRadian)

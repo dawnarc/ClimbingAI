@@ -54,7 +54,7 @@ private:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 		bool bEnabled = true;
 
 	//检测延迟时间（用于保证各个ClimbingSplineActor检测逻辑的时间错开）
@@ -89,7 +89,7 @@ protected:
 	UArrowComponent* EdgeRightBackComp;
 
 	//右边箭头的世界坐标
-	FVector RightEdgeLocation;
+	FVector EdgeRightLocation;
 
 	//判断是否进入攀爬区域的两个方向向量（右边）
 	FVector EdgeRightFrontDirection;
